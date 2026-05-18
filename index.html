@@ -101,37 +101,9 @@ letter-spacing:2px;
 
 <!-- música -->
 
-<audio id="musica" autoplay loop>
-<source src="videoplayback.mp3" type="audio/mpeg">
+<audio id="musica" loop>
+<source src="videoplayback.mp4" type="audio/mp4">
 </audio>
-
-<div class="overlay"></div>
-
-<div class="tela">
-
-<h1>SENHA</h1>
-
-<input type="password" id="senha">
-
-<br>
-
-<button onclick="entrar()">ENTRAR</button>
-
-<p id="erro"></p>
-
-</div>
-
-<script>
-
-/* tocar música após clique */
-
-window.addEventListener("load", () => {
-
-const audio = document.getElementById("musica");
-
-document.body.addEventListener("click", () => {
-
-audio.play();
 
 });
 
