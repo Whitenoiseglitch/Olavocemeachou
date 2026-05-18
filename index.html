@@ -14,7 +14,6 @@ background:black;
 }
 
 /* vídeo fundo */
-
 #bgvideo{
 position:fixed;
 top:0;
@@ -26,7 +25,6 @@ z-index:-2;
 }
 
 /* camada escura */
-
 .overlay{
 position:fixed;
 top:0;
@@ -38,7 +36,6 @@ z-index:-1;
 }
 
 /* tela */
-
 .tela{
 position:absolute;
 top:50%;
@@ -63,6 +60,7 @@ padding:15px;
 width:280px;
 font-size:20px;
 outline:none;
+text-transform:uppercase;
 }
 
 button{
@@ -94,49 +92,63 @@ letter-spacing:2px;
 <body>
 
 <!-- vídeo -->
-
 <video autoplay muted loop playsinline id="bgvideo">
 <source src="glitch.mp4" type="video/mp4">
 </video>
 
-<!-- música -->
+<!-- camada escura -->
+<div class="overlay"></div>
 
+<!-- áudio -->
 <audio id="musica" loop>
-<source src="videoplayback.m4a" type="audio/m4a">
+<source src="videoplayback.m4a" type="audio/mp4">
 </audio>
 
-});
+<!-- interface -->
+<div class="tela">
 
-});
+<h1>SENHA</h1>
 
-/* sistema de senha */
+<input type="text" id="senha" placeholder="DIGITE A SENHA">
 
+<br>
+
+<button onclick="entrar()">ENTRAR</button>
+
+<div id="erro"></div>
+
+</div>
+
+<script>
+
+/* 🔊 áudio (precisa interação por causa do navegador) */
+function iniciarAudio(){
+  const audio = document.getElementById("musica");
+  audio.play().catch(()=>{});
+}
+
+document.addEventListener("click", iniciarAudio);
+document.addEventListener("touchstart", iniciarAudio);
+
+/* 🔐 sistema de senha */
 function entrar(){
 
 let senha = document.getElementById("senha").value.toUpperCase();
 
 if(senha === "AGUA"){
-
 window.location.href = "https://drive.google.com/drive/folders/17I4q2_bfSuiQV57MC5bckdwsdJ61oFLX?usp=drive_link";
-
 }
 
 else if(senha === "GELO"){
-
 window.location.href = "https://drive.google.com/drive/folders/1cqlVOE_6xtUALwW_ROno5ehmnHDLj53P?usp=drive_link";
-
 }
 
 else if(senha === "PLANTA"){
-
 window.location.href = "https://drive.google.com/drive/folders/1FAoDE-XKcLuGaC7RI76O2Gm5h4C7pcNb?usp=drive_link";
-
 }
 
 else{
-
 document.getElementById("erro").innerText = "SENHA INCORRETA";
-
 }
 
 }
