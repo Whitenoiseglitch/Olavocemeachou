@@ -101,7 +101,7 @@ letter-spacing:2px;
 
 <!-- música -->
 
-<audio autoplay loop>
+<audio id="musica" loop>
 <source src="videoplayback.mp3" type="audio/mp3">
 </audio>
 
@@ -122,6 +122,16 @@ letter-spacing:2px;
 </div>
 
 <script>
+
+/* tocar música após primeiro clique */
+
+document.body.addEventListener("click", function () {
+
+document.getElementById("musica").play();
+
+}, { once: true });
+
+/* sistema de senha */
 
 function entrar(){
 
