@@ -36,56 +36,12 @@
   }
   #metamorfo {
     position: absolute;
-    top: 40%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 220px;
     filter: brightness(0) invert(1); /* sempre branco */
-    opacity: 0;
-  }
-  #puzzle {
-    position: absolute;
-    top: 65%;
-    left: 50%;
-    transform: translateX(-50%);
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 5px;
-    width: 50vw; /* responsivo */
-    max-width: 300px;
-    aspect-ratio: 1/1;
-  }
-  .piece {
-    width: 100%;
-    height: 100%;
-    background-image: url('snuffs_si.png');
-    background-size: 200% 200%; /* divide em 2x2 */
-    filter: brightness(0); /* sempre preto */
-    cursor: pointer;
-    border: 2px solid transparent;
-  }
-  .selected {
-    border: 2px solid white;
-  }
-  #finalPaper {
-    position: absolute;
-    top: -200px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 100px;
-    background: white;
-    color: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5em;
-    animation: fall 5s forwards;
-    cursor: pointer;
-  }
-  @keyframes fall {
-    to { top: 50%; }
+    opacity: 1; /* já começa 100% branco */
   }
 </style>
 </head>
@@ -96,7 +52,6 @@
 <div class="overlay"></div>
 <div id="countdown"></div>
 <img id="metamorfo" src="metamorfo_design_transparente.png" alt="Metamorfo">
-<div id="puzzle"></div>
 <audio id="bgmusic" src="videoplayback.m4a" loop></audio>
 <script>
   // Countdown
@@ -118,83 +73,7 @@
   setInterval(updateCountdown,1000);
   updateCountdown();
 
-  // Metamorfo opacity
-  function updateMetamorfo() {
-    const now = new Date();
-    const dates = [
-      {d:"2026-06-10T00:00:00-03:00",o:0.05},
-      {d:"2026-06-15T00:00:00-03:00",o:0.15},
-      {d:"2026-06-20T00:00:00-03:00",o:0.20},
-      {d:"2026-06-25T00:00:00-03:00",o:0.40},
-      {d:"2026-06-29T00:00:00-03:00",o:0.50},
-      {d:"2026-07-10T00:00:00-03:00",o:0.90},
-      {d:"2026-07-20T00:00:00-03:00",o:1.00}
-    ];
-    let opacity = 0;
-    for (let i=0;i<dates.length;i++){
-      if (now >= new Date(dates[i].d)) {
-        opacity = dates[i].o;
-      }
-    }
-    document.getElementById("metamorfo").style.opacity = opacity;
-  }
-  setInterval(updateMetamorfo,60000);
-  updateMetamorfo();
-
-  // Puzzle responsivo
-  const puzzle = document.getElementById("puzzle");
-  const positions = [
-    "0% 0%", "100% 0%",
-    "0% 100%", "100% 100%"
-  ];
-  let pieces = [];
-  for (let i=0;i<4;i++){
-    const div = document.createElement("div");
-    div.className="piece";
-    div.style.backgroundPosition = positions[i];
-    div.dataset.correct=i;
-    pieces.push(div);
-  }
-  // shuffle
-  pieces.sort(()=>Math.random()-0.5);
-  pieces.forEach(p=>puzzle.appendChild(p));
-
-  let selected=null;
-  puzzle.addEventListener("click",e=>{
-    if (!e.target.classList.contains("piece")) return;
-    if (!selected) {
-      selected=e.target;
-      selected.classList.add("selected");
-    } else {
-      const temp = document.createElement("div");
-      puzzle.insertBefore(temp,selected);
-      puzzle.insertBefore(selected,e.target);
-      puzzle.insertBefore(e.target,temp);
-      puzzle.removeChild(temp);
-      selected.classList.remove("selected");
-      selected=null;
-      checkPuzzle();
-    }
-  });
-
-  function checkPuzzle(){
-    const children=[...puzzle.children];
-    for (let i=0;i<children.length;i++){
-      if (children[i].dataset.correct!=i) return;
-    }
-    showFinalPaper();
-  }
-
-  function showFinalPaper(){
-    if (document.getElementById("finalPaper")) return;
-    const paper=document.createElement("div");
-    paper.id="finalPaper";
-    paper.innerText="20/07/2026";
-    paper.onclick=()=>paper.remove();
-    document.body.appendChild(paper);
-  }
-
-  // Music after interaction
+  // Música após interação
   document.body.addEventListener("click",()=>{
     document.getElementById("bgmusic").play();
   },{once:true});
