@@ -1,148 +1,203 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>20/07/2026</title>
-
+<title>ARG 20/07/2026</title>
 <style>
-
-body{
-margin:0;
-overflow:hidden;
-background:black;
-font-family:Arial,sans-serif;
-}
-
-#bgvideo{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-object-fit:cover;
-z-index:-3;
-}
-
-.overlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.65);
-z-index:-2;
-}
-
-#metamorfo{
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-width:70%;
-max-width:900px;
-filter:brightness(0) invert(1) drop-shadow(0 0 25px white);
-opacity:0;
-pointer-events:none;
-z-index:-1;
-transition:opacity 2s;
-}
-
-#contador{
-position:absolute;
-top:80px;
-left:50%;
-transform:translateX(-50%);
-color:white;
-font-size:60px;
-font-family:Impact;
-letter-spacing:5px;
-text-shadow:0 0 20px white;
-}
-
-#papel{
-display:none;
-position:absolute;
-left:50%;
-top:-200px;
-transform:translateX(-50%);
-background:white;
-color:black;
-padding:25px 60px;
-font-size:40px;
-font-weight:bold;
-cursor:pointer;
-z-index:3;
-}
-
-.cair{
-animation:cairPapel 1.5s forwards;
-}
-
-@keyframes cairPapel{
-from{
-top:-200px;
-transform:translateX(-50%) rotate(-10deg);
-}
-to{
-top:300px;
-transform:translateX(-50%) rotate(5deg);
-}
-}
-
-#quebraCabeca{
-position:absolute;
-bottom:30px;
-left:50%;
-transform:translateX(-50%);
-width:480px;
-height:480px;
-display:grid;
-grid-template-columns:repeat(6,1fr);
-grid-template-rows:repeat(6,1fr);
-z-index:5;
-}
-
-.peca{
-border:1px solid rgba(255,255,255,.05);
-background-image:url("snuffs_si.png");
-background-size:480px 480px;
-filter:brightness(0);
-cursor:pointer;
-transition:.3s;
-}
-
-.peca:hover{
-filter:brightness(.2);
-}
-
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: black;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+  video#bgvid {
+    position: fixed;
+    top: 0; left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+  .overlay {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.6);
+    z-index: -1;
+  }
+  #countdown {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 2em;
+  }
+  #metamorfo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px;
+    filter: brightness(0) invert(1);
+    opacity: 0;
+  }
+  #puzzle {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    grid-template-columns: 100px 100px;
+    grid-template-rows: 100px 100px;
+    gap: 5px;
+  }
+  .piece {
+    width: 100px;
+    height: 100px;
+    background-image: url('snuffs_si.png');
+    background-size: 200px 200px;
+    filter: brightness(0) invert(1);
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .selected {
+    border: 2px solid white;
+  }
+  #finalPaper {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 100px;
+    background: white;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    animation: fall 5s forwards;
+    cursor: pointer;
+  }
+  @keyframes fall {
+    to { top: 50%; }
+  }
 </style>
 </head>
-
 <body>
-
-<video autoplay muted loop playsinline id="bgvideo">
-<source src="glitch.mp4" type="video/mp4">
+<video id="bgvid" autoplay muted loop>
+  <source src="glitch.mp4" type="video/mp4">
 </video>
-
 <div class="overlay"></div>
-
-<audio id="musica" loop>
-<source src="videoplayback.m4a" type="audio/mp4">
-</audio>
-
-<img src="metamorfo_design_transparente.png" id="metamorfo">
-
-<div id="contador"></div>
-
-<div id="papel">20/07/2026</div>
-
-<div id="quebraCabeca"></div>
-
+<div id="countdown"></div>
+<img id="metamorfo" src="metamorfo_design_transparente.png" alt="Metamorfo">
+<div id="puzzle"></div>
+<audio id="bgmusic" src="videoplayback.m4a" loop></audio>
 <script>
+  // Countdown
+  function updateCountdown() {
+    const target = new Date("2026-07-20T00:00:00-03:00").getTime();
+    const now = new Date().getTime();
+    const diff = target - now;
+    if (diff <= 0) {
+      document.getElementById("countdown").innerText = "00:00:00:00";
+      return;
+    }
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff % (1000*60*60*24))/(1000*60*60));
+    const minutes = Math.floor((diff % (1000*60*60))/(1000*60));
+    const seconds = Math.floor((diff % (1000*60))/1000);
+    document.getElementById("countdown").innerText =
+      `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  }
+  setInterval(updateCountdown,1000);
+  updateCountdown();
 
-// restante do javascript aqui
+  // Metamorfo opacity
+  function updateMetamorfo() {
+    const now = new Date();
+    const dates = [
+      {d:"2026-06-10T00:00:00-03:00",o:0.05},
+      {d:"2026-06-15T00:00:00-03:00",o:0.15},
+      {d:"2026-06-20T00:00:00-03:00",o:0.20},
+      {d:"2026-06-25T00:00:00-03:00",o:0.40},
+      {d:"2026-06-29T00:00:00-03:00",o:0.50},
+      {d:"2026-07-10T00:00:00-03:00",o:0.90},
+      {d:"2026-07-20T00:00:00-03:00",o:1.00}
+    ];
+    let opacity = 0;
+    for (let i=0;i<dates.length;i++){
+      if (now >= new Date(dates[i].d)) {
+        opacity = dates[i].o;
+      }
+    }
+    document.getElementById("metamorfo").style.opacity = opacity;
+  }
+  setInterval(updateMetamorfo,60000);
+  updateMetamorfo();
 
+  // Puzzle
+  const puzzle = document.getElementById("puzzle");
+  const positions = [
+    {x:0,y:0}, {x:-100,y:0},
+    {x:0,y:-100}, {x:-100,y:-100}
+  ];
+  let pieces = [];
+  for (let i=0;i<4;i++){
+    const div = document.createElement("div");
+    div.className="piece";
+    div.style.backgroundPosition = `${positions[i].x}px ${positions[i].y}px`;
+    div.dataset.correct=i;
+    pieces.push(div);
+  }
+  // shuffle
+  pieces.sort(()=>Math.random()-0.5);
+  pieces.forEach(p=>puzzle.appendChild(p));
+
+  let selected=null;
+  puzzle.addEventListener("click",e=>{
+    if (!e.target.classList.contains("piece")) return;
+    if (!selected) {
+      selected=e.target;
+      selected.classList.add("selected");
+    } else {
+      const temp = document.createElement("div");
+      puzzle.insertBefore(temp,selected);
+      puzzle.insertBefore(selected,e.target);
+      puzzle.insertBefore(e.target,temp);
+      puzzle.removeChild(temp);
+      selected.classList.remove("selected");
+      selected=null;
+      checkPuzzle();
+    }
+  });
+
+  function checkPuzzle(){
+    const children=[...puzzle.children];
+    for (let i=0;i<children.length;i++){
+      if (children[i].dataset.correct!=i) return;
+    }
+    showFinalPaper();
+  }
+
+  function showFinalPaper(){
+    if (document.getElementById("finalPaper")) return;
+    const paper=document.createElement("div");
+    paper.id="finalPaper";
+    paper.innerText="20/07/2026";
+    paper.onclick=()=>paper.remove();
+    document.body.appendChild(paper);
+  }
+
+  // Music after interaction
+  document.body.addEventListener("click",()=>{
+    document.getElementById("bgmusic").play();
+  },{once:true});
 </script>
-
 </body>
 </html>
+```
